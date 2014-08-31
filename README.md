@@ -3,7 +3,7 @@ libntfslinks
 
 A C++ library for working with NTFS junctions and symbolic links.
 
-Build Instructions:
+#How to Build
 
 The solution files for this project were created for Visual Studio 2012. Any
 version after 2012 should work but has not been tested.
@@ -18,7 +18,7 @@ Once successfully built a .lib file will be generated in the lib folder in the
 root of the solution. Copy or link this file to your project and copy or link
 to the header files in the libntfslinks\include folder.
 
-Usage Instructions:
+#How to Use
 
 There are two header files of importance when using this library, Junction.h
 and Symlink.h.
@@ -31,7 +31,7 @@ when using them your application must be run with elevated privileges.
 The following is an example of working with junctions. The example
 creates a new junction, checks that it is in fact a junction, retrieves
 the target and finally deletes it.
-
+```cpp
 #include <Junction.h>
 #include <Windows.h>
 
@@ -52,9 +52,9 @@ GetJunctionTarget(TEXT("JunctionName"), Target, MAX_PATH);
 
 // Delete the junction
 DeleteJunction(TEXT("JunctionName"));
-
+```
 Working with symbolic links is just as easy.
-
+```cpp
 #include <Symlink.h>
 #include <Windows.h>
 
@@ -77,3 +77,4 @@ GetSymlinkTarget(TEXT("DirLinkName"), DirTarget, MAX_PATH);
 // Delete both symlinks
 DeleteSymlink(TEXT("FileLinkName"));
 DeleteSymlink(TEXT("DirLinkName"));
+```
