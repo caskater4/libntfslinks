@@ -5,9 +5,29 @@
 
 #include "Junction.h"
 
+/**
+ * Removes any files left over from previous tests.
+ */
+void ClearJunctionTestFiles()
+{
+	STARTUPINFO si;
+	ZeroMemory(&si, sizeof(si));
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&pi, sizeof(pi));
+	CreateProcess(TEXT("C:\\Windows\\System32\\cmd.exe"), TEXT(" /C \"rmdir TestDirJunc & rmdir TestDirJunc2 & rmdir TestDirSymLink & rmdir /s /q TestDir\""), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+	WaitForSingleObject(pi.hProcess, INFINITE);
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+}
+
 int JunctionTest()
 {
 	using namespace libntfslinks;
+	
+	ClearJunctionTestFiles();
+
+	TCHAR CurDir[MAX_PATH] = {0};
+	GetCurrentDirectory(MAX_PATH, CurDir);
 
 	// Create a temporary directory
 	CreateDirectory(TEXT("TestDir"), NULL);
@@ -59,6 +79,14 @@ int JunctionTest()
 	{
 		printf("Failed GetJunctionTarget(\"TestDirJunc\")");
 		return result;
+	}
+	TCHAR ExpectedTargetPath[MAX_PATH] = {0};
+	StringCchCopy(ExpectedTargetPath, MAX_PATH, CurDir);
+	StringCchCat(ExpectedTargetPath, MAX_PATH, TEXT("\\TestDir"));
+	if (_tcscmp(TargetPath, ExpectedTargetPath) != 0)
+	{
+		printf("GetTargetPath(\"TestDir\") returned %s. Expected: %s", TargetPath, ExpectedTargetPath);
+		return E_FAIL;
 	}
 	
 	// Test the CreateJunction function

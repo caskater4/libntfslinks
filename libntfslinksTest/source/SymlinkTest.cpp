@@ -5,9 +5,26 @@
 
 #include "Symlink.h"
 
+/**
+ * Removes any files left over from previous tests.
+ */
+void ClearSymlinkTestFiles()
+{
+	STARTUPINFO si;
+	ZeroMemory(&si, sizeof(si));
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&pi, sizeof(pi));
+	CreateProcess(TEXT("C:\\Windows\\System32\\cmd.exe"), TEXT(" /C \"rmdir TestDirSymlink & rmdir TestDirSymlink2 & rmdir /s /q TestDir\""), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+	WaitForSingleObject(pi.hProcess, INFINITE);
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+}
+
 int SymlinkTest()
 {
 	using namespace libntfslinks;
+
+	ClearSymlinkTestFiles();
 
 	// Create a temporary directory
 	CreateDirectory(TEXT("TestDir"), NULL);

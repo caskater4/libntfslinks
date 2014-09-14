@@ -93,6 +93,13 @@ DWORD CreateJunction(LPCTSTR Link, LPCTSTR Target)
 	DWORD result = (DWORD)E_FAIL;
 	HANDLE fileHandle;
 
+	// Attempt to expand the full path of Target.
+	TCHAR FullTarget[MAX_PATH];
+	if (GetFullPathName(Target, MAX_PATH, FullTarget, NULL) == 0)
+	{
+		return GetLastError();
+	}
+
 	// Create the junction as a normal directory first
 	if (!CreateDirectory(Link, NULL))
 	{
@@ -115,22 +122,16 @@ DWORD CreateJunction(LPCTSTR Link, LPCTSTR Target)
 		// Copy the junction's target
 		TCHAR SubstituteName[MAX_PATH] = {0};
 		StringCchCopy(SubstituteName, MAX_PATH, TEXT("\\??\\"));
-		GetCurrentDirectory(MAX_PATH, &SubstituteName[4]);
-		StringCbCat(SubstituteName, MAX_PATH, TEXT("\\"));
-		StringCbCat(SubstituteName, MAX_PATH, Target);
+		StringCbCat(SubstituteName, MAX_PATH, FullTarget);
 		size_t SubstituteNameLength;
 		StringCchLength(SubstituteName, MAX_PATH, &SubstituteNameLength);
 		TCHARtoWCHAR(SubstituteName, SubstituteNameLength, reparseData.MountPointReparseBuffer.PathBuffer, sizeof(Tmp) - sizeof(REPARSE_DATA_BUFFER));
 		reparseData.MountPointReparseBuffer.SubstituteNameLength = (USHORT)(SubstituteNameLength * sizeof(WCHAR));
 
 		// Copy the junction's link name
-		TCHAR LinkName[MAX_PATH] = {0};
-		GetCurrentDirectory(MAX_PATH, &LinkName[0]);
-		StringCbCat(LinkName, MAX_PATH, TEXT("\\"));
-		StringCbCat(LinkName, MAX_PATH, Target);
 		size_t LinkNameLength;
-		StringCchLength(LinkName, MAX_PATH, &LinkNameLength);
-		TCHARtoWCHAR(LinkName, LinkNameLength, &reparseData.MountPointReparseBuffer.PathBuffer[SubstituteNameLength + 1], sizeof(Tmp) - sizeof(REPARSE_DATA_BUFFER) - reparseData.MountPointReparseBuffer.SubstituteNameOffset);
+		StringCchLength(FullTarget, MAX_PATH, &LinkNameLength);
+		TCHARtoWCHAR(FullTarget, LinkNameLength, &reparseData.MountPointReparseBuffer.PathBuffer[SubstituteNameLength + 1], sizeof(Tmp) - sizeof(REPARSE_DATA_BUFFER) - reparseData.MountPointReparseBuffer.SubstituteNameOffset);
 		reparseData.MountPointReparseBuffer.PrintNameOffset = (USHORT)(reparseData.MountPointReparseBuffer.SubstituteNameLength + sizeof(WCHAR));
 		reparseData.MountPointReparseBuffer.PrintNameLength = (USHORT)(LinkNameLength * sizeof(WCHAR));
 
