@@ -64,21 +64,6 @@ DWORD GetSymlinkTarget(LPCTSTR Path, LPTSTR TargetPath, size_t TargetSize)
 				// and SubstituteName get smashed together without the proper null character in between. In some cases
 				// the length and offset is even messed up and points to the end of the path buffer.
 				size_t CopyLength = reparseData.SymbolicLinkReparseBuffer.SubstituteNameLength;
-				//if (reparseData.SymbolicLinkReparseBuffer.PrintNameOffset == 0 && reparseData.SymbolicLinkReparseBuffer.PrintNameLength >= reparseData.SymbolicLinkReparseBuffer.SubstituteNameOffset)
-				//{
-				//	CopyLength = reparseData.SymbolicLinkReparseBuffer.SubstituteNameOffset;
-				//}
-				//else if (reparseData.SymbolicLinkReparseBuffer.SubstituteNameOffset == 0 && reparseData.SymbolicLinkReparseBuffer.SubstituteNameLength >= reparseData.SymbolicLinkReparseBuffer.PrintNameOffset)
-				//{
-				//	CopyLength = reparseData.SymbolicLinkReparseBuffer.PrintNameOffset;
-				//}
-				//else if (reparseData.SymbolicLinkReparseBuffer.PrintNameLength > 0 &&
-				//	reparseData.SymbolicLinkReparseBuffer.PrintNameLength == reparseData.SymbolicLinkReparseBuffer.SubstituteNameLength &&
-				//	(reparseData.SymbolicLinkReparseBuffer.PathBuffer[reparseData.SymbolicLinkReparseBuffer.SubstituteNameOffset] == 0 ||
-				//	reparseData.SymbolicLinkReparseBuffer.PathBuffer[reparseData.SymbolicLinkReparseBuffer.SubstituteNameOffset] == 0))
-				//{
-				//	CopyLength /= 2;
-				//}
 				// Find the first null character
 				size_t NullCharIdx = 0;
 				while (reparseData.SymbolicLinkReparseBuffer.PathBuffer[NullCharIdx] != 0)
