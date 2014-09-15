@@ -30,12 +30,20 @@ int SymlinkTest()
 	CreateDirectory(TEXT("TestDir"), NULL);
 	HANDLE booHandle = CreateFile(TEXT("TestDir\\boo.txt"), GENERIC_ALL, 0, NULL, CREATE_ALWAYS, NULL, NULL);
 	CloseHandle(booHandle);
-
-	if (CreateSymbolicLink(TEXT("TestDirSymlink"), TEXT("TestDir"), SYMBOLIC_LINK_FLAG_DIRECTORY) == 0)
+	
+	// Use the 'mklink' tool to create a symlink
+	STARTUPINFO si;
+	ZeroMemory(&si, sizeof(si));
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&pi, sizeof(pi));
+	if (!CreateProcess(TEXT("C:\\Windows\\System32\\cmd.exe"), TEXT(" /C \"mklink /D TestDirSymlink TestDir\""), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
 	{
-		printf("Failed to create symlink to TestDir.");
+		printf("Failed to create junction with mklink.exe.\n", GetLastError());
 		return GetLastError();
 	}
+	WaitForSingleObject(pi.hProcess, INFINITE);
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
 
 	// Test the IsSymlink() function
 	if (IsSymlink(TEXT("TestDir")) == true)
@@ -55,6 +63,10 @@ int SymlinkTest()
 	{
 		printf("Failed GetSymlinkTarget(\"TestDirSymlink\")");
 		return result;
+	}
+	if (_tcscmp(TargetPath, TEXT("TestDir")) != 0)
+	{
+		return 1;
 	}
 	
 	// Test the CreateSymlink function

@@ -259,11 +259,13 @@
     <ClInclude Include="include\CharUtils.h" />
     <ClInclude Include="include\Junction.h" />
     <ClInclude Include="include\ntfstypes.h" />
+    <ClInclude Include="include\StringUtils.h" />
     <ClInclude Include="include\Symlink.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\CharUtils.cpp" />
     <ClCompile Include="source\Junction.cpp" />
+    <ClCompile Include="source\StringUtils.cpp" />
     <ClCompile Include="source\Symlink.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

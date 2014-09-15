@@ -61,7 +61,7 @@ DWORD GetJunctionTarget(LPCTSTR Path, LPTSTR TargetPath, size_t TargetSize)
 			{
 				// Copy the target out of the struct into a temporary string
 				WCHAR Tmp[MAX_PATH] = {0};
-				if (StringCchCopyW(Tmp, min(reparseData.MountPointReparseBuffer.PrintNameLength+1, MAX_PATH), &reparseData.MountPointReparseBuffer.PathBuffer[reparseData.MountPointReparseBuffer.PrintNameOffset/sizeof(WCHAR)]) == S_OK)
+				if (SUCCEEDED(StringCchCopyN(Tmp, MAX_PATH, &reparseData.MountPointReparseBuffer.PathBuffer[reparseData.MountPointReparseBuffer.PrintNameOffset/sizeof(WCHAR)], reparseData.MountPointReparseBuffer.PrintNameLength+1)))
 				{
 					// Copy the temp string to the provided Target buffer
 					result = WCHARtoTCHAR(Tmp, min(reparseData.MountPointReparseBuffer.PrintNameLength, MAX_PATH), TargetPath, TargetSize) == S_OK ? S_OK : GetLastError();
