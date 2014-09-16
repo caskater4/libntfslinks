@@ -34,7 +34,7 @@ int StrFind(LPCTSTR Str, LPCTSTR Sub, int StartIdx, int Dir)
 
 	int StrIdx = min(StartIdx, (int)StrLength-1);
 	int SubIdx = Dir < 0 ? (int)SubLength - 1 : 0;
-	for (; StrIdx < (int)StrLength; StrIdx = StrIdx + Dir)
+	for (; StrIdx >= 0 && StrIdx < (int)StrLength; StrIdx = StrIdx + Dir)
 	{
 		if (Str[StrIdx] == Sub[SubIdx])
 		{
