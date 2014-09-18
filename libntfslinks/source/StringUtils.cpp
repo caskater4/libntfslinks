@@ -94,7 +94,7 @@ int StrFind(LPCTSTR Str, LPCTSTR Sub, int StartIdx, int Dir)
 	return result;
 }
 
-bool StrReplace(LPCTSTR SrcStr, LPCTSTR Search, LPCTSTR Replace, LPTSTR DestStr, int Dir)
+bool StrReplace(LPCTSTR SrcStr, LPCTSTR Search, LPCTSTR Replace, LPTSTR DestStr, int StartIdx, int Dir)
 {
 	// Determine the length of SrcStr
 	size_t SrcStrLength;
@@ -111,16 +111,20 @@ bool StrReplace(LPCTSTR SrcStr, LPCTSTR Search, LPCTSTR Replace, LPTSTR DestStr,
 	}
 
 	// Find the starting index of Search in SrcStr
-	int StartIdx = StrFind(SrcStr, Search, Dir < 0 ? (int)SrcStrLength-1 : 0, Dir);
-	if (StartIdx < 0)
-	{
-		return true;
-	}
+	int FoundIdx = StrFind(SrcStr, Search, StartIdx, Dir);
 
 	// Copy the beginning of SrcStr and swap out the Search for Replace
-	StringCchCopy(DestStr, StartIdx+1, SrcStr);
-	StringCchCat(DestStr, MAX_PATH, Replace);
-	StringCchCat(DestStr, MAX_PATH, &SrcStr[StartIdx+SearchLength]);
+	if (FoundIdx >= 0)
+	{
+		StringCchCopy(DestStr, FoundIdx+1, SrcStr);
+		StringCchCat(DestStr, MAX_PATH, Replace);
+		StringCchCat(DestStr, MAX_PATH, &SrcStr[FoundIdx+SearchLength]);
+	}
+	// When no substring is found copy the source to the destination in full
+	else
+	{
+		StringCchCopy(DestStr, MAX_PATH, SrcStr);
+	}
 
 	return true;
 }

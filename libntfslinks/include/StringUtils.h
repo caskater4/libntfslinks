@@ -52,10 +52,11 @@ int StrFind(LPCTSTR Str, LPCTSTR Sub, int StartIdx = 0, int Dir = 1);
  * @param Search The substring to search for.
  * @param Replace The string to replace the substring with.
  * @param DestStr The destination to write the resulting string to.
+ * @param StartIdx The index of Str to begin the search from. Default is 0.
  * @param Dir The direction to perform the search in. Set to 1 for a left-to-right search, set to -1 for a
  *		right-to-left search.
  * @return Returns true if the operation was successful, otherwise false.
  */
-bool StrReplace(LPCTSTR SrcStr, LPCTSTR Search, LPCTSTR Replace, LPTSTR DestStr, int Dir = 1);
+bool StrReplace(LPCTSTR SrcStr, LPCTSTR Search, LPCTSTR Replace, LPTSTR DestStr, int StartIdx = 0, int Dir = 1);
 
 #endif //STRINGUTILS_H
