@@ -61,6 +61,12 @@ int StrFind(LPCTSTR Str, LPCTSTR Sub, int StartIdx, int Dir)
 		return result;
 	}
 
+	// If StartIdx is negative count backwards from the length
+	if (StartIdx < 0)
+	{
+		StartIdx += (int)StrLength;
+	}
+
 	int StrIdx = min(StartIdx, (int)StrLength-1);
 	int SubIdx = Dir < 0 ? (int)SubLength - 1 : 0;
 	for (; StrIdx >= 0 && StrIdx < (int)StrLength; StrIdx = StrIdx + Dir)

@@ -38,7 +38,8 @@
  *
  * @param Str The string to search for the substring.
  * @param Sub The string to search for in Str.
- * @param StartIdx The index of Str to begin the search from. Default is 0.
+ * @param StartIdx The index of Str to begin the search from. A negative starting index will count backwards from the
+ *			length of Str. Default is 0.
  * @param Dir The direction to perform the search in. Set to 1 for a left-to-right search, set to -1 for a
  *		right-to-left search.
  * @return Returns the starting index of the substring in Str or -1 if not found.
@@ -52,7 +53,8 @@ int StrFind(LPCTSTR Str, LPCTSTR Sub, int StartIdx = 0, int Dir = 1);
  * @param Search The substring to search for.
  * @param Replace The string to replace the substring with.
  * @param DestStr The destination to write the resulting string to.
- * @param StartIdx The index of Str to begin the search from. Default is 0.
+ * @param StartIdx The index of Str to begin the search from. A negative starting index will count backwards from the
+ *			length of SrcStr. Default is 0.
  * @param Dir The direction to perform the search in. Set to 1 for a left-to-right search, set to -1 for a
  *		right-to-left search.
  * @return Returns true if the operation was successful, otherwise false.
