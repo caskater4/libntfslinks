@@ -158,26 +158,40 @@ DWORD CreateSymlink(LPCTSTR Link, LPCTSTR Target)
 {
 	DWORD result = (DWORD)E_FAIL;
 
-	// Grab the file attributes of Target
+	// Grab the file attributes of Target. This allows us to determine the target exists but also if it is a file or
+	// directory.
 	DWORD fileAttributes = GetFileAttributes(Target);
-	if (fileAttributes != INVALID_FILE_ATTRIBUTES)
+	if (fileAttributes == INVALID_FILE_ATTRIBUTES)
 	{
-		// Determine if Target is a file or directory
-		DWORD dwFlags = 0;
-		if (fileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		// If the target does't exist it could be a relative path from the link instead of the current working
+		// directory. In this case, we'll append Target to the base Link path and see if that exists.
+		TCHAR AdjTarget[MAX_PATH];
+		StringCchCopyN(AdjTarget, MAX_PATH, Link, StrFind(Link, TEXT("\\"), -1, -1)+1);
+		StringCchCat(AdjTarget, MAX_PATH, Target);
+		fileAttributes = GetFileAttributes(AdjTarget);
+		if (fileAttributes == INVALID_FILE_ATTRIBUTES)
 		{
-			dwFlags = SYMBOLIC_LINK_FLAG_DIRECTORY;
+			// Okay so that didn't work either. This means that we likely have an unknown path type Windows can't
+			// figure out. For this we'll do a dirty trick and assume that a path whose basename does not
+			// include an extension is a directory. This should account for the vast majority of circumstances.
+			if (StrFind(Target, TEXT("."), -1, -1) < StrFind(Target, TEXT("\\"), -1, -1))
+			{
+				fileAttributes = FILE_ATTRIBUTE_DIRECTORY;
+			}
 		}
+	}
 
-		// Create the symlink
-		if (CreateSymbolicLink(Link, Target, dwFlags) != 0)
-		{
-			result = S_OK;
-		}
-		else
-		{
-			result = GetLastError();
-		}
+	// Determine if Target is a file or directory. If no attributes could be found proceed anyway
+	DWORD dwFlags = 0;
+	if (fileAttributes != INVALID_FILE_ATTRIBUTES && fileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+	{
+		dwFlags = SYMBOLIC_LINK_FLAG_DIRECTORY;
+	}
+
+	// Create the symlink
+	if (CreateSymbolicLink(Link, Target, dwFlags) != 0)
+	{
+		result = S_OK;
 	}
 	else
 	{
