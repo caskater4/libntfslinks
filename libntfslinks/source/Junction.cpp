@@ -44,7 +44,7 @@ bool IsJunction(LPCTSTR Path)
 	HANDLE fileHandle;
 
 	// We need an existing file handle in order to call DeviceIoControl
-	fileHandle = CreateFile(Path, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, NULL);
+	fileHandle = CreateFile(Path, 0, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, NULL);
 	if (fileHandle != INVALID_HANDLE_VALUE)
 	{
 		// Allocate enough space to fit the maximum sized reparse data buffer
@@ -73,7 +73,7 @@ DWORD GetJunctionTarget(LPCTSTR Path, LPTSTR TargetPath, size_t TargetSize)
 	HANDLE fileHandle;
 
 	// We need an existing file handle in order to call DeviceIoControl
-	fileHandle = CreateFile(Path, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, NULL);
+	fileHandle = CreateFile(Path, 0, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT, NULL);
 	if (fileHandle != INVALID_HANDLE_VALUE)
 	{
 		// Allocate enough space to fit the maximum sized reparse data buffer
